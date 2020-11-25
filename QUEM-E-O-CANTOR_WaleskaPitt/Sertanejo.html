@@ -1,0 +1,195 @@
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>&#9835</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" type="text/css" href="font/material-icons.css"> 
+</head>
+<body>
+
+  <!-- TELA 1 -->
+  <section class="inicio">
+  <h1></h1>   
+    <button>&#9835</button>
+
+  </section>
+  <!-- TELA 2 -->
+  
+  <!--  JOGO -->
+  <section class="jogar jogo">  
+    <header>
+      <p>
+        <span class="mticons">star</span> 
+        ACERTOS: <span class="acertos">0</span>
+        
+      </p>
+      <p>
+        <span class="mticons">alarm</span> 
+        <span class="minutos">00</span>:<span class="tempo">00</span>
+      </p>
+    </header>
+    <div>
+      <h1>QUEM ESTÁ CANTANDO?</h1>
+      <ul>
+        <li><img class="certo" src="img/FA.jpg"></li>
+        <span class="mticons" center>&#9834</span> 
+        <li><img class="errado" src="img/GM.jpg"></li>
+        <span class="mticons" center>&#9834</span> 
+        <li><img class="errado" src="img/LM.jpg"></li>
+        <span class="mticons" center>&#9834</span>
+        <li><img class="errado" src="img/M&M.jpg"></li>
+        <span class="mticons" center>&#9834</span> 
+        <li><img class="errado" src="img/MK.jpeg"></li>
+        <span class="mticons" center>&#9834</span> 
+        <li><img class="certo" src="img/JM.jpg"></li>
+        <span class="mticons" center>&#9834</span>
+        <li><img class="errado" src="img/MM.jpg"></li>
+        <span class="mticons" center>&#9834</span> 
+        <li><img class="errado" src="img/SS.jpg"></li>
+        <span class="mticons" center>&#9834</span> 
+        <li><img class="errado" src="img/ZNEC.jpg"></li>
+        <span class="mticons" center>&#9834</span>
+      </ul>
+    </div>
+    <footer>
+      <p>
+        <span class="home mticons">home</span>
+        <span class="ajuda mticons">help_outline</span>
+      </p>
+    </footer>
+  </section>
+  <!-- jogo -->
+
+  <!-- OVER -->
+  <section class="over">
+    <h2>NÃO FOI DESSA VEZ!</h2>
+    <p></p>
+    <button>&#9835</button>
+  </section>
+  <!-- OVER -->
+
+  <!-- PARABENS -->
+  <section class="parabens">
+    <h2>PARABÉNS!!</h2>
+    <p></p>
+    <button>&#9835</span></button>
+
+  </section>
+
+  
+ 
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="js/plugins.js"></script>
+  <script src="js/main.js"></script>
+
+  <script type="text/javascript">
+    var musica = new Audio();
+    var musica2 = new Audio();
+    var acertos = 0;
+    var fim = false;
+
+    $("section.inicio button").on("click", function() {
+      musica = new Audio('musica/ranking.mp3');
+      musica.play();
+      musica2 = new Audio('musica/mentira.mp3');
+      musica2.play();
+
+      $("section").hide();
+      $("section.jogo").show();
+      var timer = setInterval(function() {
+        var tempo = parseInt($("span.tempo").text());
+        tempo++;
+        if (tempo < 10) {
+          tempo = "0" + tempo;
+        } else if ((tempo >= 59) && (fim === false)) {
+          var acertos = $("span.acertos").text();
+          $("span.pont").text(acertos);
+          $("section.jogo").hide();
+          $("section.over").show();
+          $("section.over p").text("Tempo esgotado");
+          musica.pause();
+          musica2.pause();
+          musica = new Audio('musica/game_over.mp3');
+          musica.play();
+          clearInterval(timer);
+        }
+        $("span.tempo").text(tempo);
+      }, 1000)
+    });
+
+
+    $("section.jogo footer p span.home").on("click",function(){
+      location.reload();
+    })
+
+    
+    $("section.jogo footer p span.ajuda").one("click", function() {
+      $(this).css({opacity: 0.5});
+      var cantores = $(".errado");
+      for (var i=0; i<3; i++) {
+        var random = Math.floor(Math.random() * cantores.length);
+        if (cantores[random].style.opacity === "0.5") {
+          i--;
+        }
+        cantores[random].style.opacity = "0.5";
+      }
+    });
+
+    $("section.jogo ul img.certo").one("click", function() {
+      acertos++;
+      $("span.acertos").text(acertos);
+      $(this).css({opacity: 0.5});
+      if (acertos == 2) {
+        fim = true;
+          musica.pause();
+          musica2.pause();
+          musica = new Audio('musica/aplausos.mp3');
+          musica.play();
+
+        $("span.pont").text(acertos);
+        $("section.jogo").hide();
+        $("section.parabens").show();
+      }
+    });
+
+    var erros = 0;
+    $("section.jogo ul img.errado").one("click", function() {
+      if (this.style.opacity !== "0.5") {
+        erros++;
+        $(this).css({opacity: 0.5});
+
+        if (erros > 0) {
+          musica.pause();
+          musica2.pause();
+          musica = new Audio('musica/game_over.mp3');
+          musica.play();
+          var acertos = $("span.acertos").text();
+          $("span.pont").text(acertos);
+          $("section.jogo").hide();
+          $("section.over").show();
+        }
+      }
+    });
+
+    $("section.over button").on("click", function() {
+      location.reload();
+      $("section").hide();
+      $("section.jogo").show();
+    });
+
+    $("section.parabens button").on("click", function() {
+      location.reload();
+      $("section").hide();
+      $("section.jogo").show();
+    });
+  </script>
+
+</body>
+</html>
